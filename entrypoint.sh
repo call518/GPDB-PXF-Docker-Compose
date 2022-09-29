@@ -1,27 +1,20 @@
 #!/bin/bash
 
-function install(){
-    echo "install"
-    rm -rf /home/gpdb/.bashrc
-    echo "source ${GPHOME}/greenplum_path.sh" >> /home/gpdb/.bashrc
-    echo "export MASTER_DATA_DIRECTORY=/srv/gpmaster/gpsne-1" >> /home/gpdb/.bashrc
-    echo "" >> /home/gpdb/.bashrc
-    rm -rf /home/gpdb/.bash_profile
-    echo "if [ -f ~/.bashrc ]; then" >> /home/gpdb/.bash_profile
-    echo "    source ~/.bashrc" >> /home/gpdb/.bash_profile
-    echo "fi" >> /home/gpdb/.bash_profile
-    echo "" >> /home/gpdb/.bash_profile
-    chown -R gpdb:gpdb /home/gpdb
+function install_pxf() {
+    echo "Installing pxf..."
+    make -C pxf-release-6.4.2 install
+    export PATH=$PXF_HOME/bin:$PATH
+    pxf prepare
 }
 
-function start_singlenode(){
-    echo "start_singlenode"
-    service ssh start
-    exec sudo -i --preserve-env=MALLOC_ARENA_MAX,TZ,GP_DB,GP_USER,GP_PASSWORD,GPHOME -u gpdb /entrypoint.sh start_singlenode_gpdb
+function start_pxf_gpdb() {
+    source "/home/gpdb/.bashrc"
+    pxf start
+    psql -d $GP_DB -c "create extension if not exists pxf"
 }
 
 function start_singlenode_gpdb(){
-    echo "start_singlenode_gpdb"
+    sudo service ssh start
     sleep infinity & PID=$!
     trap "kill $PID" INT TERM
     export HOME="/home/gpdb"
@@ -57,14 +50,13 @@ function start_singlenode_gpdb(){
         echo "Will create db user $GP_USER for $GP_DB"
         psql -c "create user $GP_USER with password '$GP_PASSWORD';" "$GP_DB"
     fi
-    echo "Waiting for sigint or sigterm"
-    wait
-    gpstop -a -M fast
 }
-   
-if [ "${USER}" == "gpdb" ]; then
-    start_singlenode_gpdb
-else
-    install
-    start_singlenode
-fi
+
+start_singlenode_gpdb
+install_pxf
+start_pxf_gpdb
+
+echo "Waiting for sigint or sigterm"
+wait
+gpstop -a -M fast
+pxf stop
