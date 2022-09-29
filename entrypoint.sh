@@ -11,8 +11,6 @@ function start_pxf_gpdb() {
     source "/home/gpdb/.bashrc"
     pxf start
     psql -d $GP_DB -c "create extension if not exists pxf;"
-    psql -d $GP_DB -c "GRANT SELECT ON PROTOCOL pxf TO $GP_USER;"
-    psql -d $GP_DB -c "GRANT INSERT ON PROTOCOL pxf TO $GP_USER;"
 }
 
 function start_singlenode_gpdb(){
@@ -50,7 +48,7 @@ function start_singlenode_gpdb(){
         echo 'host     all         all           0.0.0.0/0  md5' >> /srv/gpmaster/gpsne-1/pg_hba.conf
         gpstop -u -a
         echo "Will create db user $GP_USER for $GP_DB"
-        psql -c "create user $GP_USER with password '$GP_PASSWORD';" "$GP_DB"
+        psql -c "create user $GP_USER with SUPERUSER password '$GP_PASSWORD';" "$GP_DB"
     fi
 }
 

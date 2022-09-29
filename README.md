@@ -50,13 +50,13 @@ This image uses several environment variables that can be left intact because al
 
 #### `GP_PASSWORD`
 
-This optional environment variable sets the regular user password for Greenplum DB. The default password is `postgres` and the user is defined by the `GP_USER` environment variable.
+This optional environment variable sets the regular superuser password for Greenplum DB. The default password is `postgres` and the superuser is defined by the `GP_USER` environment variable.
 
 **Note 1:** The image sets up `trust` authentication locally so you may notice a password is not required when connecting from `localhost` (inside the same container). However, a password will be required if connecting from a different host/container.
 
 #### `GP_USER`
 
-This optional environment variable is used to set a user. This variable will create the specified user and grant access to default database provided by `GP_DB`. If it is not specified, then the default user of `postgres` will be used.
+This optional environment variable is used to set a superuser. This variable will create the specified user with `SUPERUSER` priveleges. If it is not specified, then the default user of `postgres` will be used.
 
 #### `GP_DB`
 
