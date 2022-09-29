@@ -10,7 +10,9 @@ function install_pxf() {
 function start_pxf_gpdb() {
     source "/home/gpdb/.bashrc"
     pxf start
-    psql -d $GP_DB -c "create extension if not exists pxf"
+    psql -d $GP_DB -c "create extension if not exists pxf;"
+    psql -d $GP_DB -c "GRANT SELECT ON PROTOCOL pxf TO $GP_USER;"
+    psql -d $GP_DB -c "GRANT INSERT ON PROTOCOL pxf TO $GP_USER;"
 }
 
 function start_singlenode_gpdb(){
