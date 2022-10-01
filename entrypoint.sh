@@ -1,14 +1,8 @@
 #!/bin/bash
 
-function install_pxf() {
-    echo "Installing pxf..."
-    make -C pxf-release-6.4.2 install
-    export PATH=$PXF_HOME/bin:$PATH
-    pxf prepare
-}
-
 function start_pxf_gpdb() {
     source "/home/gpdb/.bashrc"
+    export PATH=$PXF_HOME/bin:$PATH
     pxf start
     psql -d $GP_DB -c "create extension if not exists pxf;"
 }
@@ -53,7 +47,6 @@ function start_singlenode_gpdb(){
 }
 
 start_singlenode_gpdb
-install_pxf
 start_pxf_gpdb
 
 echo "Waiting for sigint or sigterm"

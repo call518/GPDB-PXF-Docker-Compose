@@ -40,18 +40,22 @@ ENV PATH=$PATH:/usr/local/go/bin:$GOPATH/bin
 # PXF installation
 USER gpdb
 WORKDIR /home/gpdb
+
+COPY prepare_env.sh prepare_env.sh
+
 ENV JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64
 ENV PXF_HOME=/home/gpdb/pxf
 ENV PXF_BASE=/home/gpdb/pxf-base
 ENV PXF_JVM_OPTS='-Xmx512m -Xms256m'
-RUN curl -LO https://github.com/greenplum-db/pxf/archive/refs/tags/release-6.4.2.tar.gz
-RUN tar -xzf release-6.4.2.tar.gz
-RUN source /usr/local/greenplum-db/greenplum_path.sh &&\
-    sed -i 's/server install$/server install-server/g' pxf-release-6.4.2/Makefile &&\
-    make -C pxf-release-6.4.2
 
-COPY prepare_env.sh prepare_env.sh
-RUN sudo chmod +x prepare_env.sh && ./prepare_env.sh
+RUN sudo chmod +x prepare_env.sh && ./prepare_env.sh &&\
+    curl -LO https://github.com/greenplum-db/pxf/archive/refs/tags/release-6.4.2.tar.gz &&\
+    tar -xzf release-6.4.2.tar.gz &&\
+    source /usr/local/greenplum-db/greenplum_path.sh &&\
+    sed -i 's/server install$/server install-server/g' pxf-release-6.4.2/Makefile &&\
+    make -C pxf-release-6.4.2 &&\
+    make -C pxf-release-6.4.2 install &&\
+    $PXF_HOME/bin/pxf prepare
 
 COPY entrypoint.sh entrypoint.sh
 RUN sudo chmod +x entrypoint.sh
