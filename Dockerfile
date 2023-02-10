@@ -57,6 +57,10 @@ RUN sudo chmod +x prepare_env.sh && ./prepare_env.sh &&\
     make -C pxf-release-6.4.2 install &&\
     $PXF_HOME/bin/pxf prepare
 
+# Install PostgreSQL JDBC driver
+RUN curl -LO https://jdbc.postgresql.org/download/postgresql-42.5.2.jar &&\
+    cp postgresql-42.5.2.jar $PXF_HOME/lib/
+
 COPY entrypoint.sh entrypoint.sh
 RUN sudo chmod +x entrypoint.sh
 
