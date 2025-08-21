@@ -9,9 +9,9 @@ services:
       - "25432:5432"
     environment:
       # gpadmin 사용자 외에, 추가 SuperUser/database 필요시 정의
-      GP_DB: testdb
-      GP_USER: postgres
-      GP_PASSWORD: postgres
+      GP_DB: gpadmin
+      GP_USER: gpadmin
+      GP_PASSWORD: gpadmin
     volumes:
       - data:/srv
 

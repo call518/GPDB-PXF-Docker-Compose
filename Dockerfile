@@ -9,9 +9,9 @@ SHELL ["/bin/bash", "-c"]
 ENV MALLOC_ARENA_MAX=1
 ENV TZ=UTC
 ENV DEBIAN_FRONTEND=noninteractive
-ENV GP_DB=testdb
-ENV GP_USER=postgres
-ENV GP_PASSWORD=postgres
+ENV GP_DB=gpadmin
+ENV GP_USER=gpadmin
+ENV GP_PASSWORD=gpadmin
 ENV GP_VERSION=6.19.4
 ENV GPHOME=/usr/local/greenplum-db-${GP_VERSION}
 ENV GPADMIN_HOME=/home/gpadmin
