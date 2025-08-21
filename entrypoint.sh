@@ -1,19 +1,20 @@
 #!/bin/bash
 
 function start_pxf_gpdb() {
-    source "/home/gpdb/.bashrc"
+    source "/home/gpadmin/.bashrc"
     export PATH=$PXF_HOME/bin:$PATH
     pxf start
     psql -d $GP_DB -c "create extension if not exists pxf;"
 }
 
 function start_singlenode_gpdb(){
+    export PATH=$GPHOME/bin:$GPHOME/ext/python/bin:$PATH
     sudo service ssh start
     sleep infinity & PID=$!
     trap "kill $PID" INT TERM
-    export HOME="/home/gpdb"
+    export HOME="/home/gpadmin"
     cd $HOME
-    source "/home/gpdb/.bashrc"
+    source "/home/gpadmin/.bashrc"
     export MASTER_HOSTNAME="$(hostname)"
     echo "$MASTER_HOSTNAME" > ./hostlist_singlenode
     if [ -f "/srv/gpmaster/gpsne-1/pg_hba.conf" ]; then
