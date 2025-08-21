@@ -40,7 +40,8 @@ function start_singlenode_gpdb(){
         echo "" >> ./gpinitsystem_singlenode
         gpssh-exkeys -f hostlist_singlenode
         gpinitsystem -c gpinitsystem_singlenode -a
-        echo 'host     all         all           0.0.0.0/0  md5' >> /srv/gpmaster/gpsne-1/pg_hba.conf
+        # echo 'host     all         all           0.0.0.0/0  md5' >> /srv/gpmaster/gpsne-1/pg_hba.conf
+        echo 'host     all         all           0.0.0.0/0  trust' >> /srv/gpmaster/gpsne-1/pg_hba.conf
         gpstop -u -a
         echo "Will create db user $GP_USER for $GP_DB"
         psql -c "create user $GP_USER with SUPERUSER password '$GP_PASSWORD';" "$GP_DB"
